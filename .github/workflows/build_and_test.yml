@@ -123,6 +123,19 @@ jobs:
     - name: Check labeler configuration
       run: scripts/check-labeler.pl .github/labeler.yml
 
+
+    # NOTE: this is basically an inline of the official, public gh action
+    # (https://github.com/ast-grep/action).
+    - name: Run ast-grep lints
+      run: |
+        version=$(< .ci/ast-grep/VERSION.txt)
+        if [[ -z ${version:-} ]]; then
+          echo "failed to extract ast-grep version from .ci/ast-grep/VERSION.txt"
+          exit 1
+        fi
+        npm install --global "@ast-grep/cli@${version}"
+        ast-grep scan --format github
+
   schedule:
     name: Schedule busted tests to run
     runs-on: ubuntu-22.04
