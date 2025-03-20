@@ -118,14 +118,16 @@ jobs:
             exit 1
           fi
 
+      # NOTE: this is basically an inline of the official, public gh action
+      # (https://github.com/ast-grep/action).
       - name: install ast-grep
         run: |
-          version=$(< .ci/ast-grep/VERSION.txt)
-          if [[ -z ${version:-} ]]; then
-            echo "failed to extract ast-grep version from .ci/ast-grep/VERSION.txt"
+          sha=$(tail -1 .ci/ast-grep/SHA.txt)
+          if [[ -z ${sha:-} ]]; then
+            echo "failed to extract ast-grep sha/version from .ci/ast-grep/SHA.txt"
             exit 1
           fi
-          npm install --global "@ast-grep/cli@${version}"
+          npm install --global "@ast-grep/cli#${sha}"
 
       - name: ast-grep test
         run: ast-grep test
